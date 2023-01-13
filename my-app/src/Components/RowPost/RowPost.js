@@ -19,13 +19,19 @@ function RowPost(props) {
         width: '100%',
         playerVars: {
           // https://developers.google.com/youtube/player_parameters
-          autoplay: 0,
+          autoplay: 1,
         },}
     
         const handleMovie=(id)=>{
             console.log(id);
-            axios.get(`/movie/${id}?api_key=${API_KEY}&language=en-US`).then((response)=>{
-                console.log(response.data);
+            axios.get(`movie/${id}/videos?api_key=${API_KEY}&language=en-US`).then((response)=>{
+              console.log(response.data.results);
+              if (response.data.results.length !== 0) {
+                setUrlId(response.data.results[0]);
+              } else {
+                console.log("Array Empty");
+              }
+                
             })
         }
   return (
@@ -36,7 +42,8 @@ function RowPost(props) {
                 <img onClick={()=>handleMovie(obj.id)} className={props.isSmall?'smallposter':'poster'} src={`${imgUrl+obj.backdrop_path}`} alt="" />
             )}
         </div>
-        <Youtube opts={opts} videoId="2g811Eo7K8U"/>
+
+        { urlId&&<Youtube opts={opts} videoId={urlId.key}/>}
     </div>
   )
 }
